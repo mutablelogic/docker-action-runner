@@ -10,7 +10,7 @@ RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 
 # install python and the packages the your code depends on along with jq so we can parse JSON
 # add additional packages as necessary
-RUN apt-get install -y apt-utils curl jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev apt-transport-https ca-certificates gnupg lsb-release
+RUN apt-get install -y gosu apt-utils curl jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev apt-transport-https ca-certificates gnupg lsb-release
 
 # install docker
 # https://docs.docker.com/engine/install/ubuntu/
@@ -31,10 +31,6 @@ COPY start.sh start.sh
 
 # make the script executable
 RUN chmod +x start.sh
-
-# since the config and run script for actions are not allowed to be run by root,
-# set the user to "docker" so all subsequent commands are run as the docker user
-USER docker
 
 # set the entrypoint to the start.sh script
 ENTRYPOINT ["./start.sh"]

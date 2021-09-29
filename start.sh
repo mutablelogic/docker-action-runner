@@ -17,15 +17,17 @@ REG_TOKEN=$(curl -sX POST -H "Authorization: token ${ACCESS_TOKEN}" https://api.
 
 # Configure the runner
 cd /home/docker/actions-runner
-./config.sh --url https://github.com/${ORGANIZATION} --token ${REG_TOKEN}
+gosu docker ./config.sh --url https://github.com/${ORGANIZATION} --token ${REG_TOKEN}
 
 cleanup() {
     echo "Removing runner..."
-    ./config.sh remove --unattended --token ${REG_TOKEN}
+    gosu docker ./config.sh remove --unattended --token ${REG_TOKEN}
+    echo "Stopping docker..."
+    service docker stop
 }
 
 trap 'cleanup; exit 130' INT
 trap 'cleanup; exit 143' TERM
 
 # Run the runner
-./run.sh & wait $!
+gosu docker ./run.sh & wait $!

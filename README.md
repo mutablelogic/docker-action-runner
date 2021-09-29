@@ -24,7 +24,7 @@ and push to that registry:
 ```bash
 [bash] ORGANIZATION="mutablelogic"
 [bash] REGISTRY="ghcr.io/${ORGANIZATION}"
-[bash] VERSION=`git tag`
+[bash] VERSION=`git describe --tags`
 [bash] docker login "${REGISTRY}"
 [bash] docker tag runner-image-arm "${REGISTRY}/runner-image-arm:${VERSION#v}"
 [bash] docker push "${REGISTRY}/runner-image-arm:${VERSION#v}"
@@ -36,6 +36,10 @@ and push to that registry:
 At this point you would have your images in the registry ready for use.
 
 ## Running the runner
+
+You then have a choice of running directly with docker or using an orchestration tool like [Nomad](https://www.nomadproject.io/):
+
+### Docker
 
 You then need to create a runner action process, which will run the image
 and attach to GitHub Actions. Create a personal access token in GitHub [here](https://github.com/settings/tokens). The token should have `admin:org` permissions. The token should be set as an environment variable `ACCESS_TOKEN`.
@@ -54,7 +58,7 @@ and attach to GitHub Actions. Create a personal access token in GitHub [here](ht
 
 When you see the line "Listening for Jobs" you can then scoot over to the GitHub Actions page to see that the runner is working. The page will be `https://github.com/organizations/${ORGANIZATION}/settings/actions/runners`
 
-## Nomad configuration
+### Nomad
 
 Here is a typical nomad job file that will run the runner:
 
