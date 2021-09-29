@@ -10,7 +10,13 @@ RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 
 # install python and the packages the your code depends on along with jq so we can parse JSON
 # add additional packages as necessary
-RUN apt-get install -y curl jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev
+RUN apt-get install -y apt-utils curl jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev apt-transport-https ca-certificates gnupg lsb-release
+
+# install docker
+# https://docs.docker.com/engine/install/ubuntu/
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo "deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+RUN apt-get update -y && apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
