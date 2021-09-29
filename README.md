@@ -107,3 +107,12 @@ plugin "docker" {
   }
 }
 ```
+
+## References
+
+Here are some references I found useful:
+
+  * https://testdriven.io/blog/github-actions-docker/
+  * https://docs.docker.com/engine/install/ubuntu/
+  * https://github.com/myoung34/docker-github-actions-runner
+
