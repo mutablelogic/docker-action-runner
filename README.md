@@ -3,7 +3,8 @@
 This repository contains code to create a docker image for a github action runner,
 and instructions for using it. The most useful guide I found was [here](https://testdriven.io/blog/github-actions-docker/) and this repository is based on that.
 
-I am targetting ARM 32-bit (armhf) here as the environment for the runner.
+I am targetting ARM 32-bit (armhf) here as the environment for the runner, my use case is
+to be able to run GitHub Actions on ARM (which are not supported by default).
 
 ## Setup
 
@@ -107,6 +108,13 @@ plugin "docker" {
   }
 }
 ```
+
+## GitHub Actions to build the image
+
+Finally, you can then create a GitHub action which will build the image, which is part
+of this repository [here](https://github.com/mutablelogic/docker-action-runner/blob/main/.github/workflows/build-arm.yaml).
+
+This will build the image and upload it to the registry.
 
 ## References
 
