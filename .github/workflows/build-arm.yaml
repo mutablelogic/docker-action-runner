@@ -24,7 +24,7 @@ jobs:
           docker build \
             --tag ${{ steps.tags.outputs.image }}:latest \
             --tag ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }} \
-            --file Dockerfile
+            --file Dockerfile \
             .
       - name: Push
         run: |
