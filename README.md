@@ -81,6 +81,28 @@ job "action-runner" {
         username = "XXXXX"
         password = "XXXXX"
       }
+      privileged  = true
+      userns_mode = "host"
+      volumes = [
+        "/var/run/docker.sock:/var/run/docker.sock",
+      ]
+    }
+  }
+}
+```
+
+Of course, replace the `XXXXX` with your own values. Your client configuration for Nomad may also need to be updated:
+
+```hcl
+client {
+  enabled = true
+}
+
+plugin "docker" {
+  config {
+    allow_privileged = true
+    volumes {
+      enabled = true
     }
   }
 }
