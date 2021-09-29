@@ -72,7 +72,7 @@ job "action-runner" {
 
     env {
       ACCESS_TOKEN = "XXXXX"
-      ORGANIZATION = "mutablelogic"
+      ORGANIZATION = "XXXXX"
     }
 
     config {
