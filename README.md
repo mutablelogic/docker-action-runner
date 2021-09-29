@@ -15,7 +15,20 @@ and build the image, assuming you are on ARM:
 [bash] git clone git@github.com:mutablelogic/docker-action-runner.git
 [bash] cd docker-action-runner
 [bash] docker build --tag runner-image-arm .
+[bash] docker image ls runner-image-arm
 ```
 
-Re-tag the image for uploading to docker:
+Re-tag the image for uploading to docker (or whatever other registry service you're using)
+and push to that registry:
 
+```bash
+[bash] ORGANIZATION="mutablelogic"
+[bash] REGISTRY="ghcr.io/${ORGANIZATION}"
+[bash] VERSION=`git tag`
+[bash] docker login "${REGISTRY}"
+[bash] docker tag runner-image-arm "${REGISTRY}/runner-image-arm:${VERSION#v}"
+[bash] docker push "${REGISTRY}/runner-image-arm:${VERSION#v}"
+[bash] docker tag runner-image-arm "${REGISTRY}/runner-image-arm:latest"
+[bash] docker push "${REGISTRY}/runner-image-arm:latest"
+[bash] docker image rm runner-image-arm:latest
+```
