@@ -28,4 +28,5 @@ jobs:
             .
       - name: Push
         run: |
-          docker push --all-tags
+          docker push --all-tags ${{ steps.tags.outputs.image }}
+  
