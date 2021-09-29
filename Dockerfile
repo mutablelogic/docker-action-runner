@@ -12,6 +12,10 @@ RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 # add additional packages as necessary
 RUN apt-get install -y gosu apt-utils curl jq build-essential libssl-dev libffi-dev python3 python3-venv python3-dev apt-transport-https ca-certificates gnupg lsb-release
 
+# install official version of git
+RUN apt-get install -y software-properties-common && add-apt-repository -y ppa:git-core/ppa
+RUN apt-get update -y && apt-get install -y git
+
 # install docker
 # https://docs.docker.com/engine/install/ubuntu/
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
