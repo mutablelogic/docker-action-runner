@@ -1,11 +1,12 @@
 # base
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 # set the github runner version
 ARG RUNNER_VERSION="2.283.1"
 ARG RUNNER_ARCH="arm"
 
 # update the base packages and add a non-sudo user
+ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Berlin"
 RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 
 # install python and the packages the your code depends on along with jq so we can parse JSON
@@ -25,7 +26,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | g
 # https://docs.docker.com/engine/install/ubuntu/
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
     && echo "deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
-    && apt-get update -y && apt-get install -y docker-ce docker-ce-cli containerd.io
+    && apt-get update -y && apt-get install -y docker-compose containerd.io
 
 # install pkg-config libsqlite3-dev
 RUN apt-get update -y && apt-get install -y pkg-config libsqlite3-dev
