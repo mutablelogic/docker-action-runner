@@ -34,11 +34,22 @@ and push to that registry:
 [bash] docker image rm runner-image-arm:latest
 ```
 
-At this point you would have your images in the registry ready for use.
+At this point you would have your images in the registry ready for use. If you receive an error and you're
+on a Raspberry Pi, then I also made the following changes:
+
+  * I added `cgroup_enable=memory` to the file `/boot/cmdline.txt` and rebooted, so that nomad (see below)
+    can use the memory cgroups support. You need to reboot the Raspberry Pi to make the changes take effect;
+  * I downloaded and installed `libseccomp2_2.5.1-1_armhf.deb` from [here](http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb) which fixed an issue with building the container on ARM.
 
 ## Running the runner
 
-You then have a choice of running directly with docker or using an orchestration tool like [Nomad](https://www.nomadproject.io/):
+You then have a choice of running directly with docker or using an orchestration tool like [Nomad](https://www.nomadproject.io/). The environment variables you need to set in order to manage the runner environment are:
+
+  * `ORGANIZATION`: Where you're storing the runner image in the registry and the organization attached to the runner;
+  * `ACCESS_TOKEN`: Create a personal access token in GitHub [here](https://github.com/settings/tokens). The token should have `admin:org` permissions.
+  * `NAME`: The name of the runner, which is used to identify it GitHub;
+  * `LABELS`: Comma-separated labels for the runner. Generally `self-hosted, linux, arm`;
+  * `GROUP`: The runner group. Set to 'Default' if not otherwise set.
 
 ### Docker
 
@@ -51,6 +62,7 @@ and attach to GitHub Actions. Create a personal access token in GitHub [here](ht
 [bash] ACCESS_TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 [bash] docker run --detach \
   --env ORGANIZATION="${ORGANIZATION}" --env ACCESS_TOKEN="${ACCESS_TOKEN}" \
+  --env NAME="" --env LABELS="" --env GROUP="" \
   --name action-runner "${REGISTRY}/runner-image-arm:latest"
 [bash] docker logs -f action-runner
 ```
@@ -74,6 +86,9 @@ job "action-runner" {
     env {
       ACCESS_TOKEN = "XXXXX"
       ORGANIZATION = "XXXXX"
+      NAME = "XXXXX"
+      LABELS = "XXXXX'
+      GROUP = "XXXXX"
     }
 
     config {
