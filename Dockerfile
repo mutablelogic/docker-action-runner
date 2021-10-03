@@ -24,9 +24,10 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | g
 
 # install docker
 # https://docs.docker.com/engine/install/ubuntu/
+# Note we use the bionic version of docker as it's not available for focal
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
-    && echo "deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
-    && apt-get update -y && apt-get install -y docker-compose containerd.io
+    && echo "deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu bionic stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && apt-get update -y && apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # install pkg-config libsqlite3-dev libmosquitto-dev
 RUN apt-get update -y && apt-get install -y pkg-config libsqlite3-dev libmosquitto-dev
