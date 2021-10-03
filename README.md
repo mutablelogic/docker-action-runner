@@ -4,7 +4,13 @@ This repository contains code to create a docker image for a github action runne
 and instructions for using it. The most useful guide I found was [here](https://testdriven.io/blog/github-actions-docker/) and this repository is based on that.
 
 I am targetting ARM 32-bit (armhf) here as the environment for the runner, my use case is
-to be able to run GitHub Actions on ARM (which are not supported by default).
+to be able to run GitHub Actions on ARM (which are not supported by default). The environment that is
+built:
+
+  * Architecture armhf (32-bit)
+  * Ubuntu 20.04
+  * Github Action Runner 2.283.1
+  * Additional packages `git`, `gh`, `docker-compose`, `pkg-config`, `libsqlite3-dev` and `libmosquitto-dev`
 
 ## Setup
 
