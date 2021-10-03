@@ -28,8 +28,8 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
     && echo "deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
     && apt-get update -y && apt-get install -y docker-compose containerd.io
 
-# install pkg-config libsqlite3-dev
-RUN apt-get update -y && apt-get install -y pkg-config libsqlite3-dev
+# install pkg-config libsqlite3-dev libmosquitto-dev
+RUN apt-get update -y && apt-get install -y pkg-config libsqlite3-dev libmosquitto-dev
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
