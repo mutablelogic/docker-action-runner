@@ -95,25 +95,24 @@ Here is a typical nomad job file that will run the runner:
 
 ```hcl
 job "action-runner" {
-  datacenters = [ "XXXXX" ]
-  type        = "system"
+  type         = "system"
+  datacenters  =  [ "${node.datacenter}" ]
 
   task "runner" {
     driver = "docker"
 
     env {
-      ACCESS_TOKEN = "XXXXX"
-      ORGANIZATION = "XXXXX"
-      NAME = "XXXXX"
-      LABELS = "XXXXX'
-      GROUP = "XXXXX"
+      ACCESS_TOKEN = "${ACCESS_TOKEN}"
+      ORGANIZATION = "mutablelogic"
+      NAME = "${node.unique.name}"
+      LABELS = "${node.region}, ${node.datacenter}"
     }
 
     config {
-      image       = "ghcr.io/mutablelogic/runner-image-arm:latest"
+      image       = "ghcr.io/mutablelogic/runner-image"
       auth {
-        username = "XXXXX"
-        password = "XXXXX"
+        username = "${GITHUB_USERNAME}"
+        password = "${GITHUB_PASSWORD}"
       }
       privileged  = true
       userns_mode = "host"
@@ -125,7 +124,8 @@ job "action-runner" {
 }
 ```
 
-Of course, replace the `XXXXX` with your own values. Your configuration for Nomad may also need to be updated:
+Ypu'll need to have ACCESS_TOKEN, GITHUB_USERNAME and GITHUB_PASSWORD defined elsewhere.
+Your configuration for Nomad may also need to be updated for docker:
 
 ```hcl
 plugin "docker" {
