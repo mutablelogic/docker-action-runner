@@ -89,25 +89,48 @@ The page will be `https://github.com/organizations/${ORGANIZATION}/settings/acti
 Here is a typical nomad job file that will run the runner:
 
 ```hcl
+variable "access_token" {
+  type = string
+}
+
+variable "github_username" {
+  type = string
+}
+
+variable "organization" {
+  type = string
+  default = "mutablelogic"
+}
+
+variable "datacenters" {
+  type = list(string)
+  default = [ "10707" ]
+}
+
+variable "image" {
+  type = string
+  default = "ghcr.io/mutablelogic/runner-image"
+}
+
 job "action-runner" {
   type         = "system"
-  datacenters  =  [ "10707" ]
+  datacenters  = var.datacenters
 
   task "runner" {
     driver = "docker"
 
     env {
-      ORGANIZATION = "mutablelogic"
-      NAME = node.unique.name
-      LABELS = node.datacenter
-      ACCESS_TOKEN = "${ACCESS_TOKEN}"
+      ORGANIZATION = var.organization
+      NAME         = node.unique.name
+      LABELS       = node.datacenter
+      ACCESS_TOKEN = var.access_token
     }
 
     config {
-      image      = "ghcr.io/mutablelogic/runner-image"
+      image       = var.image
       auth {
-        username = "${GITHUB_USERNAME}"
-        password = "${ACCESS_TOKEN}"
+        username  = var.github_username
+        password  = var.access_token
       }
       privileged  = true
       userns_mode = "host"
@@ -119,7 +142,14 @@ job "action-runner" {
 }
 ```
 
-You'll need to have GITHUB_USERNAME and ACCESS_TOKEN, defined elsewhere.
+You'll need to have `var.github_username` and `var.access_token`, defined elsewhere, for example you can invoke from the command line:
+
+```bash
+[bash] nomad job run \
+  -var github_username=djthorpe -var access_token=XXXXXXXXX \
+  action-runner.hcl 
+```
+
 Your configuration for Nomad may also need to be updated for docker:
 
 ```hcl
