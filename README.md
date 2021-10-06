@@ -23,7 +23,11 @@ if you are on ARM 32-bit:
 ```bash
 [bash] git clone git@github.com:mutablelogic/docker-action-runner.git
 [bash] cd docker-action-runner
-[bash] ARCH=arm64; docker build --tag runner-image-${ARCH} --build-arg RUNNER_VERSION="2.283.3" --build-arg RUNNER_ARCH="${ARCH}" .
+[bash] docker build \
+  --tag runner-image-arm64 \
+  --build-arg RUNNER_VERSION="2.283.3" \
+  --build-arg RUNNER_ARCH="arm64" \
+  .
 ```
 
 Re-tag the image for uploading to docker (or whatever other registry service you're using)
@@ -45,17 +49,8 @@ At this point you would have your images in the registry ready for use. I also m
 
 ## Creating a manifest
 
-If you have a number of images with different architectures you want to combine, use `docker manifest`. For example,
-
-```bash
-[bash] ORGANIZATION="mutablelogic" REGISTRY="ghcr.io/${ORGANIZATION}" MANIFEST="runner-image" VERSION=`git describe --tags`
-[bash] docker pull "${REGISTRY}/${MANIFEST}-arm:${VERSION#v}" && docker pull "${REGISTRY}/${MANIFEST}-arm64:${VERSION#v}"
-[bash] docker manifest create "${REGISTRY}/${MANIFEST}:${VERSION#v}" \
-  --amend "${REGISTRY}/${MANIFEST}-arm:${VERSION#v}" \
-  --amend "${REGISTRY}/${MANIFEST}-arm64:${VERSION#v}"
-[bash] echo "Push: ${REGISTRY}/${MANIFEST}:${VERSION#v}"
-[bash] docker push "${REGISTRY}/${MANIFEST}:${VERSION#v}"
-```
+If you have a number of images with different architectures you want to combine into a
+single manifest, please see the __GitHub Actions__ workflow below.
 
 ## Running the runner
 
@@ -75,12 +70,12 @@ If you're using Docker to create a runner action process, create a personal acce
 The token should have `admin:org` permissions. The token should be set as an environment variable `ACCESS_TOKEN`.
 
 ```bash
-[bash] ARCH="arm64" ORGANIZATION="mutablelogic" REGISTRY="ghcr.io/${ORGANIZATION}" ACCESS_TOKEN="XXXXXXX"
+[bash] ORGANIZATION="mutablelogic" REGISTRY="ghcr.io/${ORGANIZATION}" ACCESS_TOKEN="XXXXXXX"
 [bash] docker run --detach --name action-runner \
   --env ORGANIZATION="${ORGANIZATION}" --env ACCESS_TOKEN="${ACCESS_TOKEN}" \
   --env NAME="${HOSTNAME}" --env LABELS="" --env GROUP="" \
   --volume /var/run/docker.sock:/var/run/docker.sock \
-  "${REGISTRY}/runner-image-${ARCH}"
+  "${REGISTRY}/runner-image:latest"
 [bash] docker logs -f action-runner
 ```
 
@@ -96,23 +91,23 @@ Here is a typical nomad job file that will run the runner:
 ```hcl
 job "action-runner" {
   type         = "system"
-  datacenters  =  [ "${node.datacenter}" ]
+  datacenters  =  [ "10707" ]
 
   task "runner" {
     driver = "docker"
 
     env {
-      ACCESS_TOKEN = "${ACCESS_TOKEN}"
       ORGANIZATION = "mutablelogic"
-      NAME = "${node.unique.name}"
-      LABELS = "${node.region}, ${node.datacenter}"
+      NAME = node.unique.name
+      LABELS = node.datacenter
+      ACCESS_TOKEN = "${ACCESS_TOKEN}"
     }
 
     config {
-      image       = "ghcr.io/mutablelogic/runner-image"
+      image      = "ghcr.io/mutablelogic/runner-image"
       auth {
         username = "${GITHUB_USERNAME}"
-        password = "${GITHUB_PASSWORD}"
+        password = "${ACCESS_TOKEN}"
       }
       privileged  = true
       userns_mode = "host"
@@ -124,7 +119,7 @@ job "action-runner" {
 }
 ```
 
-Ypu'll need to have ACCESS_TOKEN, GITHUB_USERNAME and GITHUB_PASSWORD defined elsewhere.
+You'll need to have GITHUB_USERNAME and ACCESS_TOKEN, defined elsewhere.
 Your configuration for Nomad may also need to be updated for docker:
 
 ```hcl
