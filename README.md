@@ -37,11 +37,11 @@ and push to that registry once you know it's worked:
 [bash] docker push "${REGISTRY}/${IMAGE}:${VERSION#v}" && docker push "${REGISTRY}/${IMAGE}" && docker image rm "${IMAGE}"
 ```
 
-At this point you would have your images in the registry ready for use. I also made the following changes:
+At this point you would have your images in the registry ready for use. I also made the following changes on my Raspberry Pi:
 
-  * I added `cgroup_enable=memory` to the file `/boot/cmdline.txt` and rebooted, so that nomad (see below)
-    can use the memory cgroups support. You need to reboot the Raspberry Pi to make the changes take effect;
-  * I downloaded and installed `libseccomp2_2.5.1-1_armhf.deb` from [here](http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb) which fixed an issue with building the container on ARM.
+  * I added `cgroup_enable=memory` to the file `/boot/cmdline.txt` and rebooted, so that nomad (see below) can use the memory cgroups support. You need to reboot the 
+  Raspberry Pi to make the changes take effect;
+  * I downloaded and installed `libseccomp2_2.5.1-1_armhf.deb` from [here](http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb) which fixed an issue with building the container on ARM (change `armhf` to `arm64` as necessary).
 
 ## Creating a manifest
 
@@ -125,13 +125,9 @@ job "action-runner" {
 }
 ```
 
-Of course, replace the `XXXXX` with your own values. Your client configuration for Nomad may also need to be updated:
+Of course, replace the `XXXXX` with your own values. Your configuration for Nomad may also need to be updated:
 
 ```hcl
-client {
-  enabled = true
-}
-
 plugin "docker" {
   config {
     allow_privileged = true
@@ -144,10 +140,10 @@ plugin "docker" {
 
 ## GitHub Actions to build the image
 
-Finally, you can then create a GitHub action which will build the image, which is part
-of this repository [here](https://github.com/mutablelogic/docker-action-runner/blob/main/.github/workflows/build-arm.yaml).
-
-This will build the image and upload it to the registry.
+Finally, you can then create a GitHub action which will build the images and a
+manifest, which is part of this repository [here](https://github.com/mutablelogic/docker-action-runner/blob/main/.github/workflows/make-image.yaml). These images
+are currently private but you can set up your own workflow or let me know and I can
+make the images visible to you.
 
 ## References
 
