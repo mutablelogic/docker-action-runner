@@ -75,8 +75,17 @@ jobs:
         id: tags
         run: |
           echo ::set-output name=manifest::ghcr.io/${{ github.repository_owner }}/runner-image
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Manifest
         run: |
-          docker manifest create ${{ steps.tags.outputs.manifest }}
+          docker pull ${{ steps.tags.outputs.manifest }}-arm
+          docker pull ${{ steps.tags.outputs.manifest }}-arm64
+          docker manifest create ${{ steps.tags.outputs.manifest }} \
+            --amend ${{ steps.tags.outputs.manifest }}-arm \
+            --amend ${{ steps.tags.outputs.manifest }}-arm64
           docker push ${{ steps.tags.outputs.manifest }}
-
