@@ -1,9 +1,8 @@
 # base
 FROM ubuntu:20.04
 
-# set the github runner version
-ARG RUNNER_VERSION="2.283.1"
-ARG RUNNER_ARCH="arm"
+ARG RUNNER_ARCH
+ARG RUNNER_VERSION
 
 # update the base packages and add a non-sudo user
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Berlin"
@@ -27,24 +26,22 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | g
 # Note we use the bionic version of docker as it's not available for focal
 # https://github.com/docker/for-linux/issues/1035
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
-    && echo "deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu bionic stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu bionic stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
     && apt-get update -y && apt-get install -y docker-ce docker-ce-cli containerd.io
 
-# install pkg-config libsqlite3-dev libmosquitto-dev
-RUN apt-get update -y && apt-get install -y pkg-config libsqlite3-dev libmosquitto-dev
+# install pkg-config libmosquitto-dev
+RUN apt-get update -y && apt-get install -y pkg-config libmosquitto-dev
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
-    && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-${RUNNER_ARCH}-${RUNNER_VERSION}.tar.gz \
-    && tar xzf ./actions-runner-linux-${RUNNER_ARCH}-${RUNNER_VERSION}.tar.gz
+    && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-$RUNNER_ARCH-$RUNNER_VERSION.tar.gz \
+    && tar xzf ./actions-runner-linux-$RUNNER_ARCH-$RUNNER_VERSION.tar.gz
 
 # install some additional dependencies
 RUN chown -R docker ~docker && /home/docker/actions-runner/bin/installdependencies.sh
 
-# copy over the start.sh script
+# copy over the start.sh script, make it executable
 COPY start.sh start.sh
-
-# make the script executable
 RUN chmod +x start.sh
 
 # set the entrypoint to the start.sh script
