@@ -65,7 +65,8 @@ The environment variables you need to set in order to manage the runner environm
   * `ORGANIZATION`: Where you're storing the runner image in the registry and the organization attached to the runner;
   * `ACCESS_TOKEN`: Create a personal access token in GitHub [here](https://github.com/settings/tokens). The token should have `admin:org` permissions.
   * `NAME`: The name of the runner, which is used to identify it on GitHub (optional);
-  * `LABELS`: Comma-separated labels for the runner (optional). Generally `self-hosted, linux, arm` or similar;
+  * `LABELS`: Comma-separated labels for the runner (optional). These are in addition
+    to the existing labels `self-hosted, linux, arm` or similar;
   * `GROUP`: The runner group. Set to 'Default' if not otherwise set.
 
 ### Docker
@@ -77,7 +78,8 @@ The token should have `admin:org` permissions. The token should be set as an env
 [bash] ARCH="arm64" ORGANIZATION="mutablelogic" REGISTRY="ghcr.io/${ORGANIZATION}" ACCESS_TOKEN="XXXXXXX"
 [bash] docker run --detach --name action-runner \
   --env ORGANIZATION="${ORGANIZATION}" --env ACCESS_TOKEN="${ACCESS_TOKEN}" \
-  --env NAME="" --env LABELS="" --env GROUP="" \
+  --env NAME="${HOSTNAME}" --env LABELS="" --env GROUP="" \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
   "${REGISTRY}/runner-image-${ARCH}"
 [bash] docker logs -f action-runner
 ```

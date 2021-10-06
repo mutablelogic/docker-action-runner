@@ -1,4 +1,4 @@
-name: Release
+name: Build action-runner
 on:
   release:
     types: [ created, edited ]
@@ -65,3 +65,18 @@ jobs:
         run: |
           docker push ${{ steps.tags.outputs.image }}:latest
           docker push ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }}
+  manifest:
+    needs:
+      - build-arm
+      - build-arm64
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Set tags
+        id: tags
+        run: |
+          echo ::set-output name=manifest::ghcr.io/${{ github.repository_owner }}/runner-image
+      - name: Create Manifest
+        run: |
+          docker manifest create ${{ steps.tags.outputs.manifest }}
+          docker push ${{ steps.tags.outputs.manifest }}
+
