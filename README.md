@@ -10,7 +10,8 @@ built:
   * Architecture armhf (32-bit)
   * Ubuntu 20.04
   * Github Action Runner 2.283.1
-  * Additional packages `git`, `gh`, `docker-compose`, `pkg-config`, `libsqlite3-dev` and `libmosquitto-dev`
+  * Additional packages and repositories `git`, `gh`, `docker-ce`, `pkg-config`, `libsqlite3-dev` 
+    and `libmosquitto-dev`
 
 ## Setup
 
