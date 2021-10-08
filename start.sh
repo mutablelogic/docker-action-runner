@@ -1,5 +1,4 @@
 #!/bin/bash
-
 if [ "${ORGANIZATION}" == "" ] ; then
     echo "Please set the ORGANIZATION environment variable"
     exit -1
@@ -29,7 +28,7 @@ cleanup() {
 }
 
 # Deregister runner on exit
-trap cleanup SIGINT SIGQUIT SIGTERM INT TERM QUIT
+trap 'kill ${!}; cleanup' SIGUSR1 SIGINT SIGQUIT SIGTERM SIGKILL
 
 # Set the docker permissions
 echo "Setting docker permissions..."

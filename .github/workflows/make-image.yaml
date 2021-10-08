@@ -1,0 +1,95 @@
+name: Build action-runner
+on:
+  release:
+    types: [ created, edited ]
+jobs:
+  build-arm:
+    runs-on: [self-hosted, linux, arm]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set tags
+        id: tags
+        run: |
+          echo ::set-output name=arch::arm
+          echo ::set-output name=runner::2.283.3
+          echo ::set-output name=image::ghcr.io/${{ github.repository_owner }}/runner-image-arm
+          echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}          
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: |
+          docker build \
+            --tag ${{ steps.tags.outputs.image }}:latest \
+            --tag ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }} \
+            --build-arg RUNNER_VERSION=${{ steps.tags.outputs.runner }} \
+            --build-arg RUNNER_ARCH=${{ steps.tags.outputs.arch }} \
+            --file Dockerfile \
+            .
+      - name: Push
+        run: |
+          docker push ${{ steps.tags.outputs.image }}:latest
+          docker push ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }}
+  build-arm64:
+    runs-on: [self-hosted, linux, arm64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set tags
+        id: tags
+        run: |
+          echo ::set-output name=arch::arm64
+          echo ::set-output name=runner::2.283.3
+          echo ::set-output name=image::ghcr.io/${{ github.repository_owner }}/runner-image-arm
+          echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}          
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: |
+          docker build \
+            --tag ${{ steps.tags.outputs.image }}:latest \
+            --tag ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }} \
+            --build-arg RUNNER_VERSION=${{ steps.tags.outputs.runner }} \
+            --build-arg RUNNER_ARCH=${{ steps.tags.outputs.arch }} \
+            --file Dockerfile \
+            .
+      - name: Push
+        run: |
+          docker push ${{ steps.tags.outputs.image }}:latest
+          docker push ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }}
+  manifest:
+    needs:
+      - build-arm
+      - build-arm64
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Set tags
+        id: tags
+        run: |
+          echo ::set-output name=manifest::ghcr.io/${{ github.repository_owner }}/runner-image
+      - name: Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Manifest
+        run: |
+          docker pull ${{ steps.tags.outputs.manifest }}-arm
+          docker pull ${{ steps.tags.outputs.manifest }}-arm64
+          docker manifest create ${{ steps.tags.outputs.manifest }} \
+            --amend ${{ steps.tags.outputs.manifest }}-arm \
+            --amend ${{ steps.tags.outputs.manifest }}-arm64
+          docker manifest annotate ${{ steps.tags.outputs.manifest }} \
+            ${{ steps.tags.outputs.manifest }}-arm --arch arm
+          docker manifest annotate ${{ steps.tags.outputs.manifest }} \
+            ${{ steps.tags.outputs.manifest }}-arm64 --arch arm64
+          docker manifest push ${{ steps.tags.outputs.manifest }}
