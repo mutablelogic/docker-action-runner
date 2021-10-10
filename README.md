@@ -9,9 +9,10 @@ to be able to run GitHub Actions on ARM (which are not supported by default).
 The environment that is built into docker images is:
 
   * Architecture armhf (32-bit) and arm64
-  * Ubuntu 20.04
+  * Ubuntu 18.04 (Bionic) or 20.04 (Focal). Bionic is currently preferred.
   * Github Action Runner 2.283.3
-  * Additional packages `git`, `gh`, `docker-compose`, `pkg-config` and `libmosquitto-dev`
+  * Additional packages `git`, `gh`, `docker-compose`, `pkg-config`,
+      `protobuf-compiler`, `libprotobuf-dev` and `libmosquitto-dev`
 
 ## Setup
 
@@ -22,19 +23,20 @@ if you are on ARM 32-bit:
 
 ```bash
 [bash] git clone git@github.com:mutablelogic/docker-action-runner.git
-[bash] cd docker-action-runner
+[bash] cd docker-action-runner && RUNNER_ARCH="arm64"
 [bash] docker build \
-  --tag runner-image-arm64 \
+  --tag "runner-image-${RUNNER_ARCH}" \
   --build-arg RUNNER_VERSION="2.283.3" \
-  --build-arg RUNNER_ARCH="arm64" \
-  .
+  --build-arg RUNNER_ARCH="${RUNNER_ARCH}" \
+  -f Dockerfile-bionic .
 ```
 
 Re-tag the image for uploading to docker (or whatever other registry service you're using)
 and push to that registry once you know it's worked:
 
 ```bash
-[bash] ARCH="arm64" ORGANIZATION="mutablelogic" REGISTRY="ghcr.io/${ORGANIZATION}" IMAGE="runner-image-${ARCH}" VERSION=`git describe --tags` 
+[bash] RUNNER_ARCH="arm64" ORGANIZATION="mutablelogic" REGISTRY="ghcr.io/${ORGANIZATION}" \
+       IMAGE="runner-image-${RUNNER_ARCH}" VERSION=`git describe --tags` 
 [bash] echo "Push: ${REGISTRY}/${IMAGE}:${VERSION#v}"
 [bash] docker login "${REGISTRY}"
 [bash] docker tag "${IMAGE}" "${REGISTRY}/${IMAGE}:${VERSION#v}" && docker tag "${IMAGE}" "${REGISTRY}/${IMAGE}:latest"

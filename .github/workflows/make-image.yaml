@@ -28,8 +28,7 @@ jobs:
             --tag ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }} \
             --build-arg RUNNER_VERSION=${{ steps.tags.outputs.runner }} \
             --build-arg RUNNER_ARCH=${{ steps.tags.outputs.arch }} \
-            --file Dockerfile \
-            .
+            --file Dockerfile-bionic .
       - name: Push
         run: |
           docker push ${{ steps.tags.outputs.image }}:latest
@@ -59,8 +58,7 @@ jobs:
             --tag ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }} \
             --build-arg RUNNER_VERSION=${{ steps.tags.outputs.runner }} \
             --build-arg RUNNER_ARCH=${{ steps.tags.outputs.arch }} \
-            --file Dockerfile \
-            .
+            --file Dockerfile-bionic .
       - name: Push
         run: |
           docker push ${{ steps.tags.outputs.image }}:latest
