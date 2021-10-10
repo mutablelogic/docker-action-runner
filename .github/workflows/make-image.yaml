@@ -67,7 +67,7 @@ jobs:
     needs:
       - build-arm
       - build-arm64
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted, linux, arm]
     steps:
       - name: Set tags
         id: tags
@@ -81,8 +81,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Manifest
         run: |
-          docker pull ${{ steps.tags.outputs.manifest }}-arm
-          docker pull ${{ steps.tags.outputs.manifest }}-arm64
           docker manifest create ${{ steps.tags.outputs.manifest }} \
             --amend ${{ steps.tags.outputs.manifest }}-arm \
             --amend ${{ steps.tags.outputs.manifest }}-arm64
