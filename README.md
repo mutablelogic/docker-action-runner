@@ -12,7 +12,9 @@ The environment that is built into docker images is:
   * Ubuntu 18.04 (Bionic) or 20.04 (Focal). Bionic is currently preferred.
   * Github Action Runner 2.283.3
   * Additional packages `git`, `gh`, `docker-compose`, `pkg-config`,
-      `protobuf-compiler`, `libprotobuf-dev` and `libmosquitto-dev`
+      `protobuf-compiler`, `libprotobuf-dev`, `libmosquitto-dev`,
+      `libavcodec-dev`, `libavdevice-dev`, `libavfilter-dev`, `libavformat-dev`,
+      `libavresample-dev`, `libavutil-dev` and `libchromaprint-dev`
 
 ## Setup
 
