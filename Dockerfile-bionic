@@ -30,7 +30,11 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
     && apt-get update -y && apt-get install -y docker-ce docker-ce-cli containerd.io
 
 # install other build dependencies
-RUN apt-get update -y && apt-get install -y pkg-config protobuf-compiler libprotobuf-dev libmosquitto-dev
+RUN apt-get update -y && apt-get install -y pkg-config \
+  protobuf-compiler libprotobuf-dev \
+  libmosquitto-dev \
+  libavcodec-dev libavdevice-dev libavfilter-dev \
+  libavformat-dev libavresample-dev libavutil-dev libchromaprint-dev
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
