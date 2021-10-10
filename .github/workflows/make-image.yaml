@@ -43,7 +43,7 @@ jobs:
         run: |
           echo ::set-output name=arch::arm64
           echo ::set-output name=runner::2.283.3
-          echo ::set-output name=image::ghcr.io/${{ github.repository_owner }}/runner-image-arm
+          echo ::set-output name=image::ghcr.io/${{ github.repository_owner }}/runner-image-arm64
           echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}          
       - name: Login
         uses: docker/login-action@v1
