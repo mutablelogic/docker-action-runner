@@ -18,6 +18,7 @@ gosu docker ./config.sh --url https://github.com/${ORGANIZATION} --token ${REG_T
    --labels "${LABELS}" \
    --runnergroup "${GROUP}" \
    --unattended \
+   --disableupdate \
    --replace
 
 # Trap signals and cleanup
