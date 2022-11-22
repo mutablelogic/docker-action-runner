@@ -7,6 +7,6 @@ jobs:
     strategy:
       matrix:
         arch: [arm, arm64, amd64]
-    uses: mutablelogic/docker-action-runner/.github/workflows/build-image.yml@main
+    uses: mutablelogic/docker-action-runner/.github/workflows/build-image.yaml@main
     with:
       target: ${{ matrix.target }}
