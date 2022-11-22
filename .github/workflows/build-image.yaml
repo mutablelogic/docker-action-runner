@@ -8,12 +8,33 @@ on:
         type: string
 
 jobs:
-  build-image:
+  build-image-amd64:
     name: Generate output
-    runs-on:
-     - self-hosted
-     - linux
-     - ${{ inputs.target }}
+    if: inputs.target == 'amd64'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set tags
+        id: tags
+        run: |
+          env
+  build-image-arm64:
+    name: Generate output
+    if: inputs.target == 'arm64'
+    runs-on: [self-hosted, linux, arm64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set tags
+        id: tags
+        run: |
+          env
+
+  build-image-arm:
+    name: Generate output
+    if: inputs.target == 'arm'
+    runs-on: [self-hosted, linux, arm]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
