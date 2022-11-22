@@ -1,0 +1,23 @@
+name: Build target image
+on:
+  workflow_call:
+    inputs:
+      target:
+        description: 'Target architecture'
+        required: true
+        type: string
+
+jobs:
+  build-image:
+    name: Generate output
+    runs-on:
+     - self-hosted
+     - linux
+     - ${{ inputs.target }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set tags
+        id: tags
+        run: |
+          env

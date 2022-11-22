@@ -1,0 +1,12 @@
+name: Build action-runner (test)
+on:
+  release:
+    types: [ created, edited ]
+jobs:
+  build-image:
+    strategy:
+      matrix:
+        arch: [arm, arm64, amd64]
+    uses: mutablelogic/docker-action-runner/.github/workflows/build-image.yml
+    with:
+      target: ${{ matrix.target }}
