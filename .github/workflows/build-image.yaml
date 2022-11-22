@@ -10,7 +10,7 @@ on:
 jobs:
   build-image-amd64:
     name: Generate output
-    if: inputs.target == 'amd64'
+    if: ${{ inputs.target == 'amd64' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,7 +21,7 @@ jobs:
           env
   build-image-arm64:
     name: Generate output
-    if: inputs.target == 'arm64'
+    if: ${{ inputs.target == 'arm64' }}
     runs-on: [self-hosted, linux, arm64]
     steps:
       - name: Checkout
@@ -33,7 +33,7 @@ jobs:
 
   build-image-arm:
     name: Generate output
-    if: inputs.target == 'arm'
+    if: ${{ inputs.target == 'arm' }}
     runs-on: [self-hosted, linux, arm]
     steps:
       - name: Checkout
