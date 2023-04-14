@@ -12,7 +12,7 @@ jobs:
         id: tags
         run: |
           echo ::set-output name=arch::arm
-          echo ::set-output name=runner::2.299.1
+          echo ::set-output name=runner::2.303.0
           echo ::set-output name=image::ghcr.io/${{ github.repository_owner }}/runner-image-arm
           echo ::set-output name=tag::${GITHUB_REF#refs/tags/v}          
       - name: Login
