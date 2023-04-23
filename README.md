@@ -10,7 +10,7 @@ The environment that is built into docker images is:
 
   * Architecture armhf (32-bit) and arm64
   * Ubuntu 18.04 (Bionic) or 20.04 (Focal). Bionic is currently preferred.
-  * Github Action Runner 2.283.3
+  * Github Action Runner 2.303
   * Additional packages `git`, `gh`, `docker-compose`, `pkg-config`,
       `protobuf-compiler`, `libprotobuf-dev`, `libmosquitto-dev`,
       `libavcodec-dev`, `libavdevice-dev`, `libavfilter-dev`, `libavformat-dev`,
