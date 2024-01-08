@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set tags
         id: tags
         run: |
@@ -25,19 +25,7 @@ jobs:
     runs-on: [self-hosted, linux, arm64]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set tags
-        id: tags
-        run: |
-          env
-
-  build-image-arm:
-    name: Generate output
-    if: ${{ inputs.target == 'arm' }}
-    runs-on: [self-hosted, linux, arm]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Set tags
         id: tags
         run: |
