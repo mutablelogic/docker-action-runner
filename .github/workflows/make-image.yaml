@@ -7,8 +7,8 @@ jobs:
     strategy:
       matrix:
         version: [ 2.311.0 ]
-        arch: [ arm, amd64, arm64 ]
-    runs-on: [self-hosted, linux, arm]
+        arch: [ arm64 ]
+    runs-on: [self-hosted, linux, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
