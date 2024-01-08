@@ -8,13 +8,8 @@ ARG RUNNER_VERSION
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Berlin"
 RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
 
-# install jq so we can parse JSON
-# add additional packages as necessary
-RUN apt-get install -y gosu apt-utils curl jq build-essential apt-transport-https ca-certificates gnupg lsb-release
-
-# install official version of git
-RUN apt-get install -y software-properties-common && add-apt-repository -y ppa:git-core/ppa \
-    && apt-get update -y && apt-get install -y git
+# install additional packages as necessary
+RUN apt-get install -y gosu curl jq ca-certificates gnupg lsb-release git
 
 # install gh tool
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
