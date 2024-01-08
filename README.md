@@ -4,22 +4,19 @@ This repository contains code to create a docker image for a github action runne
 and instructions for using it. The most useful guide I found was 
 [here](https://testdriven.io/blog/github-actions-docker/) and this repository is based on that.
 
-I am targetting ARM 32-bit (armhf) and 64-bit (arm64), my use case is
-to be able to run GitHub Actions on ARM (which are not supported by default). 
-The environment that is built into docker images is:
+I am targetting 64-bit (arm64 and x64), my use case is
+to be able to run GitHub Actions as self-hosted action runners.  The environment that is built
+into docker images is:
 
-  * Architecture armhf (32-bit) and arm64
-  * Ubuntu 18.04 (Bionic) or 20.04 (Focal). Bionic is currently preferred.
-  * Github Action Runner 2.310.2
-  * Additional packages `git`, `gh`, `docker-compose`, `pkg-config`,
-      `protobuf-compiler`, `libprotobuf-dev`, `libmosquitto-dev`,
-      `libavcodec-dev`, `libavdevice-dev`, `libavfilter-dev`, `libavformat-dev`,
-      `libavresample-dev`, `libavutil-dev` and `libchromaprint-dev`
+  * Architecture arm64 and x64
+  * Debian Bookworm
+  * Github Action Runner 2.311.0
+  * Additional packages `git`, `gh`, `docker-compose`
 
 ## Setup
 
 In order to create the image the first time, you'll need to install docker, as per
-[this guide](https://docs.docker.com/engine/install/ubuntu/). Then download the repository
+[this guide](https://docs.docker.com/engine/install/debian/). Then download the repository
 and build the image, assuming you are on `arm64`. The ARCH value of `arm` is also possible
 if you are on ARM 32-bit:
 
@@ -28,7 +25,7 @@ if you are on ARM 32-bit:
 [bash] cd docker-action-runner && RUNNER_ARCH="arm64"
 [bash] docker build \
   --tag "runner-image-${RUNNER_ARCH}" \
-  --build-arg RUNNER_VERSION="2.310.2" \
+  --build-arg RUNNER_VERSION="2.311.0" \
   --build-arg RUNNER_ARCH="${RUNNER_ARCH}" \
   -f Dockerfile-bionic .
 ```
