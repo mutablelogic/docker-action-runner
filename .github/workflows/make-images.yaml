@@ -13,9 +13,9 @@ jobs:
         arch: [ arm64, amd64 ]
     uses: mutablelogic/docker-action-runner/.github/workflows/build-image.yaml@main
     with:
-      version: ${{ env.version }}
       platform: ${{ matrix.platform }}
       arch: ${{ matrix.arch }}
+      version: 2.311.0
   create-manifest:
     needs:
       - build-images
