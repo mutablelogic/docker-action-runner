@@ -7,33 +7,17 @@ on:
         required: true
         type: string
       platform:
-        description: 'Target Platform'
+        description: 'Target platform'
         required: true
         type: string
       arch:
         description: 'Target architecture'
         required: true
         type: string
-
 jobs:
-  build-github-hosted:
-    name: Build linux/amd64
-    if: ${{ inputs.platform == 'linux' && inputs.arch == 'amd64' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-  build-self-hosted-linux-arm64:
-    name: Build linux/arm64
-    if: ${{ inputs.platform == 'linux' && inputs.arch == 'arm64' }}
-    runs-on: [self-hosted, linux, arm64]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-  build-self-hosted-arm:
-    name: Build linux/arm
-    if: ${{ inputs.platform == 'linux' && inputs.arch == 'arm' }}
-    runs-on: [self-hosted, linux, arm]
+  build:
+    name: Build
+    runs-on: ${{ inputs.platform == 'linux' && (inputs.arch == 'arm64' || inputs.arch == 'arm') && 'self-hosted' || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
