@@ -2,31 +2,38 @@ name: Build target image
 on:
   workflow_call:
     inputs:
-      target:
+      version:
+        description: 'Runner version'
+        required: true
+        type: string
+      platform:
+        description: 'Target Platform'
+        required: true
+        type: string
+      arch:
         description: 'Target architecture'
         required: true
         type: string
 
 jobs:
-  build-image-amd64:
-    name: Generate output
-    if: ${{ inputs.target == 'amd64' }}
+  build-github-hosted:
+    name: Build linux/amd64
+    if: ${{ inputs.platform == 'linux' && inputs.arch == 'amd64' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set tags
-        id: tags
-        run: |
-          env
-  build-image-arm64:
-    name: Generate output
-    if: ${{ inputs.target == 'arm64' }}
+  build-self-hosted-linux-arm64:
+    name: Build linux/arm64
+    if: ${{ inputs.platform == 'linux' && inputs.arch == 'arm64' }}
     runs-on: [self-hosted, linux, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set tags
-        id: tags
-        run: |
-          env
+  build-self-hosted-arm:
+    name: Build linux/arm
+    if: ${{ inputs.platform == 'linux' && inputs.arch == 'arm' }}
+    runs-on: [self-hosted, linux, arm]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4

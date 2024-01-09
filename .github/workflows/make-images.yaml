@@ -3,10 +3,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-image:
+  build-images:
     strategy:
       matrix:
-        arch: [arm, arm64, amd64]
+        version: [ 2.311.0 ]
+        platform: [ linux ]
+        arch: [ arm64, amd64 ]
     uses: mutablelogic/docker-action-runner/.github/workflows/build-image.yaml@main
     with:
-      target: ${{ matrix.target }}
+      version: ${{ matrix.version }}
+      platform: ${{ matrix.platform }}
+      arch: ${{ matrix.arch }}
