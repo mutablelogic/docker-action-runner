@@ -21,3 +21,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set tags
+        id: tags
+        run: |
+          echo "image=ghcr.io/${{ github.repository_owner }}/runner-image-${{ inputs.arch }}" >> $GITHUB_OUTPUT
+          echo "tag=${{ inputs.version }}" >> $GITHUB_OUTPUT
+      - name: Login
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: |
+          docker build \
+            --tag ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }} \
+            --build-arg RUNNER_VERSION=${{ inputs.version }} \
+            --build-arg RUNNER_ARCH=${{ inputs.arch }} \
+            --file Dockerfile-bookworm .
+      - name: Push
+        run: |
+          docker push ${{ steps.tags.outputs.image }}:${{ steps.tags.outputs.tag }}
